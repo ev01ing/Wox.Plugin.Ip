@@ -1,0 +1,11 @@
+{
+    "ID":"B4D3B69656E16D44865C8D818EAE47C7",
+    "ActionKeyword":"ip",
+    "Name":"ip",
+    "Description":"列出本地IP，IP格式转换",
+    "Author":"ev01ing",
+    "Version":"1.0.0",
+    "Language":"python",
+    "Website":"https://github.com/ev01ing/Wox.Plugin.Ip",
+    "ExecuteFileName":"main.py"
+}
