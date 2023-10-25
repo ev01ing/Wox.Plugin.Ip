@@ -7,5 +7,6 @@
     "Version":"1.0.0",
     "Language":"python",
     "Website":"https://github.com/ev01ing/Wox.Plugin.Ip",
-    "ExecuteFileName":"main.py"
+    "ExecuteFileName":"main.py",
+	"icoPath": null
 }

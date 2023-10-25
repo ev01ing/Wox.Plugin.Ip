@@ -1,12 +1,11 @@
 # coding:utf-8
-import os
 from ipaddress import ip_address
 
 from wox import Wox, WoxAPI
 import time
 import traceback
 import logging
-import clipboard
+import pyperclip
 import sys
 import requests
 
@@ -33,35 +32,23 @@ class Main(Wox):
         results = []
 
         if not key:
-            cache = IPCache(self.filename)
-            ipv4, ipv6, timestamp = cache.ipv4, cache.ipv6, cache.timestamp
-            # logging.info(ipv4, timestamp)
-            # logging.info((ipv4 and ipv6 and int(time.time()) - timestamp < 60 * 2))
-            if not (ipv4 and ipv6 and int(time.time()) - timestamp < 60 * 2):
-                logging.info("get ipv4 and ipv6")
-                ipv4 = self.get_ipv4()
-                ipv6 = self.get_ipv6()
-
-                cache.cache_ipv4(ipv4)
-                cache.cache_ipv6(ipv6)
-                cache.refresh_timestamp()
-                cache.write()
-
+            ipv4, ipv6 = self.ipv4_and_6()
             # logging.info(ip, ipv6)
             self._construct_result_with_copy(ipv4, "IPv4地址", [ipv4], results)
             self._construct_result_with_copy(ipv6, "IPv6地址", [ipv6], results)
             return results
         elif self.is_number(key):
             num = int(key)
+            # 0.0.0.0 ~ 255.255.255.255
             if 0 <= num <= 4294967295:
                 try:
                     ip = self.int2ip(int(key))
                     self._construct_result_with_copy(ip, "from int", [ip], results)
                     return results
-                except Exception:
+                except:
                     logging.error(traceback.format_exc())
-            elif num > 4294967295:
-                pass
+            # elif num > 4294967295:
+            #     pass
 
         elif is_ipv4(key):
             temp = self.ip2int(key)
@@ -80,13 +67,41 @@ class Main(Wox):
         self._construct_result_with_copy(u'格式非法 : "%s"' % key, u'tips: "%s"' % key, [key], results)
         return results
 
+    def ipv4_and_6(self):
+        cache = IPCache(self.filename)
+        ipv4, ipv6, timestamp = cache.ipv4, cache.ipv6, cache.timestamp
+        # logging.info(ipv4, timestamp)
+        # logging.info((ipv4 and ipv6 and int(time.time()) - timestamp < 60 * 2))
+        if not (ipv4 and ipv6 and int(time.time()) - timestamp < 60 * 2):
+            logging.info("get ipv4 and ipv6")
+            ipv4 = self.get_ipv4()
+            ipv6 = self.get_ipv6()
+
+            cache.cache_ipv4(ipv4)
+            cache.cache_ipv6(ipv6)
+            cache.refresh_timestamp()
+            cache.write()
+
+        if not ipv4:
+            ipv4 = "无法获取"
+        if not ipv6:
+            ipv6 = "无法获取"
+
+        return ipv4, ipv6
+
     def get_ipv6(self):
-        res = self.request("https://v6.ip.zxinc.org/getip")
-        return res.text
+        try:
+            res = self.request("https://v6.ip.zxinc.org/getip")
+            return res.text
+        except:
+            return None
 
     def get_ipv4(self):
-        res = self.request("https://v4.ip.zxinc.org/getip")
-        return res.text
+        try:
+            res = self.request("https://v4.ip.zxinc.org/getip")
+            return res.text
+        except:
+            return None
 
     def request(self, url):
         return requests.get(url)
@@ -132,7 +147,7 @@ class Main(Wox):
         return str(int(ip_int)) + ip
 
     def copy_to_clip(self, text):
-        clipboard.copy(text)
+        pyperclip.copy(text)
 
 
 if __name__ == "__main__":
