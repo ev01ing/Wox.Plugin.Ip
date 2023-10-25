@@ -8,5 +8,5 @@
     "Language":"python",
     "Website":"https://github.com/ev01ing/Wox.Plugin.Ip",
     "ExecuteFileName":"main.py",
-	"icoPath": null
+	"IcoPath": "images/ip_icon.png"
 }

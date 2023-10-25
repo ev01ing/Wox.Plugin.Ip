@@ -111,7 +111,7 @@ class Main(Wox):
         results.append({
             "Title": title,
             "SubTitle": subtitle,
-            # "IcoPath": "Images/pic.png",
+            "IcoPath": "Images/ip_icon.png",
             "JsonRPCAction": {
                 "method": "copy_to_clip",
                 "parameters": parameters,
